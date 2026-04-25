@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Legion — Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/legion-mark.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet" />
+<style>
+  /* ———————————————————————————————
+     LEGION — Design System tokens
+     ——————————————————————————————— */
+  :root {
+    /* neutrals — warm-cool neutral, near-black */
+    --ink-1000: oklch(0.06 0.004 260);    /* deepest */
+    --ink-950:  oklch(0.10 0.004 260);
+    --ink-900:  oklch(0.14 0.004 260);
+    --ink-800:  oklch(0.20 0.004 260);
+    --ink-700:  oklch(0.30 0.004 260);
+    --ink-600:  oklch(0.45 0.004 260);
+    --ink-500:  oklch(0.58 0.004 260);
+    --ink-400:  oklch(0.70 0.004 260);
+    --ink-300:  oklch(0.82 0.004 260);
+    --ink-200:  oklch(0.90 0.004 260);
+    --ink-100:  oklch(0.95 0.004 260);
+    --ink-50:   oklch(0.98 0.004 260);
+
+    /* signal — only two, used sparingly */
+    --signal-amber: oklch(0.82 0.14 75);
+    --signal-red:   oklch(0.64 0.18 25);
+    --signal-cyan:  oklch(0.78 0.09 220);
+
+    /* glass */
+    --glass-bg:     color-mix(in oklch, var(--ink-1000) 55%, transparent);
+    --glass-stroke: color-mix(in oklch, var(--ink-50) 14%, transparent);
+    --glass-hi:     color-mix(in oklch, var(--ink-50) 22%, transparent);
+    --glass-lo:     color-mix(in oklch, var(--ink-1000) 75%, transparent);
+
+    /* type */
+    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "JetBrains Mono", monospace;
+    --font-serif: "Instrument Serif", "Times New Roman", serif;
+
+    /* spacing (4pt base) */
+    --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+    --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+    --s-9: 96px; --s-10: 128px;
+
+    /* radii — mostly sharp; glass has slight rounding */
+    --r-0: 0px;
+    --r-1: 2px;
+    --r-2: 6px;
+    --r-3: 12px;
+    --r-4: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--ink-1000);
+    color: var(--ink-100);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss02", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  /* base grid background (subtle) */
+  body {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--ink-50) 3%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--ink-50) 3%, transparent) 1px, transparent 1px);
+    background-size: 96px 96px;
+    background-position: 0 0;
+  }
+
+  /* ———————————————————————————————
+     Utility
+     ——————————————————————————————— */
+  .container { max-width: 1440px; margin: 0 auto; padding: 0 var(--s-7); }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--signal-amber);
+    display: inline-block;
+    border-radius: 1px;
+  }
+  .hairline { height: 1px; background: var(--ink-800); border: 0; }
+  .vhairline { width: 1px; background: var(--ink-800); }
+
+  h1,h2,h3,h4 { font-weight: 500; letter-spacing: -0.02em; line-height: 1.05; text-wrap: balance; }
+  h1 { font-size: clamp(48px, 7vw, 104px); font-weight: 400; letter-spacing: -0.035em; }
+  h2 { font-size: clamp(32px, 4vw, 56px); font-weight: 400; letter-spacing: -0.03em; }
+  h3 { font-size: 22px; }
+
+  .mono { font-family: var(--font-mono); }
+  .serif { font-family: var(--font-serif); font-style: italic; }
+
+  /* ———————————————————————————————
+     NAV BAR — glass
+     ——————————————————————————————— */
+  .nav {
+    position: fixed;
+    inset: 16px 16px auto 16px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 var(--s-4) 0 var(--s-4);
+    gap: var(--s-3);
+    background: color-mix(in oklch, var(--ink-1000) 60%, transparent);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-3);
+    box-shadow:
+      0 1px 0 0 color-mix(in oklch, var(--ink-50) 8%, transparent) inset,
+      0 24px 48px -24px rgba(0,0,0,0.5);
+  }
+  .nav__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-right: var(--s-5);
+    border-right: 1px solid var(--ink-800);
+    height: 100%;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .nav__mark {
+    width: 24px; height: 24px;
+    display: grid; place-items: center;
+  }
+  .nav__mark svg { width: 100%; height: 100%; }
+  .nav__wordmark {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+  .nav__links {
+    display: flex;
+    gap: 2px;
+    margin-left: var(--s-4);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .nav__link {
+    padding: 8px 14px;
+    font-size: 13.5px;
+    color: var(--ink-300);
+    border-radius: var(--r-1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .15s, background .15s;
+  }
+  .nav__link:hover { color: var(--ink-50); background: color-mix(in oklch, var(--ink-50) 6%, transparent); }
+  .nav__link--active { color: var(--ink-50); }
+  .nav__link--active::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--signal-amber);
+  }
+  .nav__meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-right: var(--s-4);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  @media (max-width: 1180px) {
+    .nav__meta { display: none; }
+  }
+  @media (max-width: 960px) {
+    .nav__links { display: none; }
+  }
+  .nav__meta .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: oklch(0.78 0.14 150);
+    box-shadow: 0 0 8px oklch(0.78 0.14 150);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ———————————————————————————————
+     HERO
+     ——————————————————————————————— */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 120px;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero__media video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.05) brightness(0.55);
+  }
+  .hero__veil {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 20% 100%, color-mix(in oklch, var(--ink-1000) 80%, transparent) 0%, transparent 60%),
+      linear-gradient(to top, var(--ink-1000) 0%, transparent 40%, color-mix(in oklch, var(--ink-1000) 50%, transparent) 100%);
+    pointer-events: none;
+  }
+  /* scanlines */
+  .hero__scan {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      color-mix(in oklch, var(--ink-50) 2%, transparent) 2px 3px
+    );
+    mix-blend-mode: overlay;
+    opacity: .5;
+    pointer-events: none;
+  }
+  /* crosshair guides */
+  .hero__grid {
+    position: absolute; inset: 80px 48px 48px 48px;
+    border: 1px solid color-mix(in oklch, var(--ink-50) 8%, transparent);
+    border-radius: var(--r-3);
+    pointer-events: none;
+  }
+  .hero__grid::before,
+  .hero__grid::after {
+    content: "";
+    position: absolute;
+    background: color-mix(in oklch, var(--ink-50) 8%, transparent);
+  }
+  .hero__grid::before { left: 33.333%; top: 0; bottom: 0; width: 1px; }
+  .hero__grid::after  { left: 66.666%; top: 0; bottom: 0; width: 1px; }
+
+  .hero__ticker {
+    position: absolute;
+    top: 104px; left: 64px; right: 64px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-400);
+    letter-spacing: 0.08em;
+    z-index: 2;
+  }
+  .hero__ticker span { display: inline-flex; gap: 10px; }
+  .hero__ticker .corner::before { content: "┌"; color: var(--ink-600); }
+  .hero__ticker .corner--tr::before { content: "┐"; }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 64px 80px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .hero__content h1 {
+    font-weight: 300;
+  }
+  .hero__content h1 .italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .hero__sub {
+    color: var(--ink-300);
+    font-size: 18px;
+    max-width: 44ch;
+    margin-top: var(--s-5);
+    line-height: 1.45;
+  }
+  .hero__actions { margin-top: var(--s-6); display: flex; gap: var(--s-3); }
+
+  .hero__sidecard {
+    /* glass telemetry card */
+    padding: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-3);
+    box-shadow:
+      0 1px 0 0 var(--glass-hi) inset,
+      0 24px 60px -24px rgba(0,0,0,.7);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .sidecard__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--glass-stroke);
+  }
+  .sidecard__title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-300);
+    text-transform: uppercase;
+  }
+  .sidecard__row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .sidecard__row .k { color: var(--ink-500); }
+  .sidecard__row .v { color: var(--ink-100); font-variant-numeric: tabular-nums; }
+  .sidecard__chart {
+    height: 40px;
+    background:
+      linear-gradient(to right,
+        transparent 0,
+        color-mix(in oklch, var(--signal-amber) 20%, transparent) 40%,
+        color-mix(in oklch, var(--signal-amber) 40%, transparent) 70%,
+        transparent 100%);
+    border-top: 1px solid var(--glass-stroke);
+    border-bottom: 1px solid var(--glass-stroke);
+    position: relative;
+    margin: 0 -20px;
+  }
+  .sidecard__chart svg { width: 100%; height: 100%; display: block; }
+
+  /* ———————————————————————————————
+     BUTTONS
+     ——————————————————————————————— */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 22px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: var(--r-1);
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .btn svg { width: 14px; height: 14px; stroke-width: 1.6; }
+  .btn--primary {
+    background: var(--ink-50);
+    color: var(--ink-1000);
+    border: 1px solid var(--ink-50);
+  }
+  .btn--primary:hover { background: var(--ink-200); transform: translateY(-1px); }
+  .btn--secondary {
+    background: transparent;
+    color: var(--ink-100);
+    border: 1px solid var(--ink-700);
+  }
+  .btn--secondary:hover { border-color: var(--ink-400); background: color-mix(in oklch, var(--ink-50) 4%, transparent); }
+  .btn--glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    color: var(--ink-50);
+    border: 1px solid var(--glass-stroke);
+    box-shadow: 0 1px 0 0 var(--glass-hi) inset;
+  }
+  .btn--glass:hover { border-color: var(--glass-hi); }
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink-300);
+    border: 1px solid transparent;
+  }
+  .btn--ghost:hover { color: var(--ink-50); border-color: var(--ink-800); }
+  .btn--danger {
+    background: transparent;
+    color: var(--signal-red);
+    border: 1px solid color-mix(in oklch, var(--signal-red) 40%, transparent);
+  }
+  .btn--danger:hover { background: color-mix(in oklch, var(--signal-red) 12%, transparent); }
+  .btn--sm { height: 32px; padding: 0 14px; font-size: 11px; }
+  .btn--lg { height: 52px; padding: 0 28px; font-size: 14px; }
+
+  .btn--icon {
+    width: 44px; height: 44px; padding: 0;
+  }
+
+  /* ———————————————————————————————
+     SECTIONS
+     ——————————————————————————————— */
+  .section {
+    padding: var(--s-9) 0;
+    position: relative;
+  }
+  .section__head {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: var(--s-6);
+    align-items: end;
+    padding-bottom: var(--s-6);
+    border-bottom: 1px solid var(--ink-900);
+    margin-bottom: var(--s-7);
+  }
+  .section__idx {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-500);
+  }
+  .section__title {
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    color: var(--ink-50);
+    line-height: 1;
+  }
+  .section__desc { color: var(--ink-400); max-width: 42ch; font-size: 14px; }
+
+  /* color & token grid */
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-900);
+  }
+  .swatch {
+    aspect-ratio: 1;
+    background: var(--ink-1000);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .swatch__num { font-family: var(--font-mono); font-size: 10px; color: var(--ink-500); letter-spacing: 0.08em; }
+  .swatch__hex { font-family: var(--font-mono); font-size: 10px; color: var(--ink-400); letter-spacing: 0.02em; }
+
+  /* type spec rows */
+  .type-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 160px;
+    align-items: baseline;
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--ink-900);
+    gap: var(--s-5);
+  }
+  .type-row__label { font-family: var(--font-mono); font-size: 11px; color: var(--ink-500); letter-spacing: 0.08em; text-transform: uppercase; }
+  .type-row__spec { font-family: var(--font-mono); font-size: 11px; color: var(--ink-500); text-align: right; }
+
+  /* cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Card — telemetry (glass over image) */
+  .card {
+    position: relative;
+    border-radius: var(--r-3);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--ink-950);
+    border: 1px solid var(--ink-800);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--ink-600); transform: translateY(-2px); }
+
+  .card__media {
+    position: relative;
+    flex: 1;
+    min-height: 220px;
+    overflow: hidden;
+  }
+  .card__media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.05) brightness(0.7);
+  }
+  .card__media::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, var(--ink-1000) 100%);
+  }
+  .card__tag {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-100);
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .card__tag::before {
+    content: ""; width: 5px; height: 5px; background: var(--signal-amber); border-radius: 1px;
+  }
+  .card__coords {
+    position: absolute; top: 12px; right: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-300);
+    text-align: right;
+    line-height: 1.3;
+    z-index: 2;
+  }
+  .card__body {
+    padding: 20px;
+    border-top: 1px solid var(--ink-800);
+    background: var(--ink-950);
+  }
+  .card__kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-500);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card__title { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 8px; }
+  .card__desc { color: var(--ink-400); font-size: 13.5px; line-height: 1.5; }
+  .card__footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--ink-900);
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-400);
+  }
+
+  /* Card — glass/overlay variant (full image with floating meta) */
+  .card--glass {
+    min-height: 440px;
+  }
+  .card--glass .card__media { flex: 1; min-height: 0; }
+  .card--glass .card__body {
+    position: absolute;
+    left: 16px; right: 16px; bottom: 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-2);
+    box-shadow: 0 1px 0 0 var(--glass-hi) inset;
+  }
+
+  /* Card — stat (pure data) */
+  .card--stat {
+    min-height: 220px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card--stat .stat__num {
+    font-size: 76px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+  }
+  .card--stat .stat__label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--ink-500); text-transform: uppercase;
+  }
+  .card--stat .stat__delta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: oklch(0.78 0.14 150);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* FOOTER / system meta strip */
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-top: 1px solid var(--ink-900);
+    border-bottom: 1px solid var(--ink-900);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+  }
+  .meta-strip > div {
+    padding: 14px 18px;
+    border-right: 1px solid var(--ink-900);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .meta-strip > div:last-child { border-right: 0; }
+  .meta-strip .k { color: var(--ink-600); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .meta-strip .v { color: var(--ink-200); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+  /* Doc frame marker (corner ticks) */
+  .corner-frame { position: relative; }
+  .corner-frame::before, .corner-frame::after,
+  .corner-frame > .tl, .corner-frame > .br {
+    content: ""; position: absolute; width: 10px; height: 10px;
+    border-color: var(--ink-500);
+  }
+  .corner-frame::before { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+  .corner-frame::after  { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+
+  /* page intro */
+  .intro {
+    padding: 140px 0 80px;
+    border-bottom: 1px solid var(--ink-900);
+  }
+  .intro__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-8);
+    align-items: end;
+  }
+  .intro h1 {
+    font-size: clamp(56px, 8vw, 128px);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+  .intro p { color: var(--ink-400); font-size: 17px; max-width: 46ch; line-height: 1.5; }
+
+  /* classification banner */
+  .classif {
+    padding: 10px 64px;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink-900);
+  }
+
+  /* Icon row for feature chips */
+  .chips {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-300);
+    border: 1px solid var(--ink-800);
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--ink-50) 2%, transparent);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .chip::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--ink-500);
+  }
+  .chip--on::before { background: var(--signal-amber); box-shadow: 0 0 6px var(--signal-amber); }
+  .chip--ok::before { background: oklch(0.78 0.14 150); }
+
+  /* Component specimen frame */
+  .specimen {
+    border: 1px solid var(--ink-900);
+    border-radius: var(--r-3);
+    background:
+      linear-gradient(135deg, var(--ink-950) 0%, var(--ink-1000) 100%);
+    padding: var(--s-7);
+    position: relative;
+    overflow: hidden;
+  }
+  .specimen--dark {
+    background:
+      linear-gradient(135deg, var(--ink-1000) 0%, var(--ink-950) 100%);
+  }
+  .specimen--image {
+    background: url("assets/img-2.png") center/cover;
+  }
+  .specimen--image::before {
+    content: ""; position: absolute; inset: 0;
+    background: color-mix(in oklch, var(--ink-1000) 35%, transparent);
+    backdrop-filter: grayscale(100%) contrast(1.05) brightness(0.65);
+    -webkit-backdrop-filter: grayscale(100%) contrast(1.05) brightness(0.65);
+  }
+  .specimen > * { position: relative; z-index: 1; }
+  .specimen__label {
+    position: absolute;
+    top: 14px; left: 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  /* row of three example buttons */
+  .btn-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--ink-900);
+    border: 1px solid var(--ink-900);
+    border-radius: var(--r-3);
+    overflow: hidden;
+  }
+  .btn-cell {
+    background: var(--ink-1000);
+    padding: var(--s-7) var(--s-5);
+    display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-4);
+    min-height: 160px;
+  }
+  .btn-cell__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+  }
+
+  .legion-mark {
+    /* convert red gradient favicon into monochrome via CSS filter */
+    filter: grayscale(100%) brightness(2) contrast(1.2);
+    /* fallback: if you want pure white: */
+  }
+
+  /* FOOTER */
+  footer {
+    padding: var(--s-8) 0 var(--s-5);
+    border-top: 1px solid var(--ink-900);
+    color: var(--ink-500);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--s-6);
+    padding-bottom: var(--s-7);
+  }
+  .footer-cols h4 {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-600);
+    text-transform: uppercase;
+    margin-bottom: var(--s-4);
+    font-weight: 500;
+  }
+  .footer-cols a { color: var(--ink-300); display: block; padding: 4px 0; font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; }
+  .footer-cols a:hover { color: var(--ink-50); }
+
+</style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav__brand">
+    <div class="nav__mark">
+      <!-- Geometric Legion-L monochrome mark (original) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 3 L4 21 L20 21" />
+        <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.4" />
+        <circle cx="4" cy="3" r="1.2" fill="currentColor" stroke="none" />
+        <circle cx="20" cy="21" r="1.2" fill="currentColor" stroke="none" />
+      </svg>
+    </div>
+    <span class="nav__wordmark">Legion</span>
+  </div>
+  <div class="nav__links">
+    <a class="nav__link nav__link--active" href="#">Platform</a>
+    <a class="nav__link" href="#">Systems</a>
+    <a class="nav__link" href="#">Missions</a>
+    <a class="nav__link" href="#">Research</a>
+    <a class="nav__link" href="#">Press</a>
+    <a class="nav__link" href="#">Careers</a>
+  </div>
+  <div class="nav__meta">
+    <span class="dot"></span>
+    <span>OPS // LIVE</span>
+    <span style="color:var(--ink-700)">|</span>
+    <span>v4.12.0</span>
+  </div>
+  <button class="btn btn--glass btn--sm" style="flex-shrink:0;">Request Brief →</button>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="hero__media">
+    <video autoplay muted loop playsinline>
+      <source src="assets/hero-defense.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__veil"></div>
+    <div class="hero__scan"></div>
+    <div class="hero__grid"></div>
+  </div>
+
+  <div class="hero__ticker">
+    <span class="corner">LEGION / DEFENSE SYSTEMS</span>
+    <span>LAT 31.7°N · LON 35.2°E · ALT 814M</span>
+    <span class="corner corner--tr">TRANSMISSION SECURE</span>
+  </div>
+
+  <div class="hero__content">
+    <div>
+      <div class="eyebrow" style="margin-bottom: 28px;">Autonomous Defense Infrastructure</div>
+      <h1>
+        Precision at<br/>
+        the edge of <span class="italic">uncertainty</span>.
+      </h1>
+      <p class="hero__sub">Legion builds integrated hardware &amp; software for national defense — sensing, command, and effectors operating as a single, sovereign system.</p>
+      <div class="hero__actions">
+        <button class="btn btn--primary btn--lg">
+          Explore the Platform
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <button class="btn btn--glass btn--lg">
+          Watch Film
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="6,4 20,12 6,20" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <div class="chips" style="margin-top: 40px;">
+        <span class="chip chip--on">Sensing</span>
+        <span class="chip chip--on">Command</span>
+        <span class="chip chip--ok">Effectors</span>
+        <span class="chip">Logistics</span>
+        <span class="chip">Maritime</span>
+      </div>
+    </div>
+
+    <aside class="hero__sidecard" aria-label="System telemetry">
+      <div class="sidecard__head">
+        <span class="sidecard__title">Telemetry · Δ-07</span>
+        <span class="mono" style="font-size:10px; color: var(--signal-amber)">TRACKING</span>
+      </div>
+      <div class="sidecard__row"><span class="k">NODES ONLINE</span><span class="v">248 / 256</span></div>
+      <div class="sidecard__row"><span class="k">LATENCY</span><span class="v">12 ms</span></div>
+      <div class="sidecard__row"><span class="k">BANDWIDTH</span><span class="v">1.42 GB/s</span></div>
+      <div class="sidecard__chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <polyline fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"
+            points="0,30 15,28 30,25 45,26 60,18 75,22 90,12 105,16 120,8 135,14 150,6 165,10 180,4 200,9" />
+          <polyline fill="none" stroke="var(--signal-amber)" stroke-width="1.2"
+            points="0,30 15,28 30,25 45,26 60,18 75,22 90,12 105,16 120,8 135,14 150,6 165,10 180,4 200,9" />
+        </svg>
+      </div>
+      <div class="sidecard__row"><span class="k">MISSION</span><span class="v">OP. HORIZON-4</span></div>
+      <div class="sidecard__row"><span class="k">STATUS</span><span class="v" style="color: oklch(0.78 0.14 150)">NOMINAL</span></div>
+    </aside>
+  </div>
+</header>
+
+<!-- CLASSIFICATION BANNER -->
+<div class="classif">
+  <span>// DESIGN SYSTEM — v1.0.2</span>
+  <span>INTERNAL USE</span>
+  <span>LAST UPDATED 2026.04.24</span>
+</div>
+
+<!-- ==================== INTRO ==================== -->
+<div class="intro">
+  <div class="container">
+    <div class="intro__grid">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 28px;">The System</div>
+        <h1>A <span class="serif">monochrome</span> language for serious infrastructure.</h1>
+      </div>
+      <div>
+        <p>Legion's design system prioritizes legibility, restraint, and signal over decoration. Everything is built around a single neutral spine — pure black through near-white — with sparing amber signal used only where status truly demands it. Motion is quiet. Detail rewards attention.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FOUNDATIONS — COLOR ==================== -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">F.01 / FOUNDATIONS</div>
+      <div>
+        <div class="section__title">Palette</div>
+      </div>
+      <div class="section__desc">12-step neutral spine plus three signal colors. Accents are used only for status, classification, and telemetry.</div>
+    </div>
+
+    <div class="token-grid" id="swatches"></div>
+
+    <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 24px;">
+      <div class="specimen specimen--dark" style="padding: 28px;">
+        <div class="specimen__label">Signal · Amber</div>
+        <div style="height: 80px;"></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div>
+            <div style="font-size:28px; letter-spacing:-0.02em;">Tracking</div>
+            <div style="font-family:var(--font-mono); font-size:11px; color:var(--ink-500); margin-top:6px;">USED FOR ACTIVE TARGETS &amp; IN-PROGRESS STATES</div>
+          </div>
+          <div style="width:48px; height:48px; background: var(--signal-amber); border-radius: 2px; box-shadow: 0 0 24px color-mix(in oklch, var(--signal-amber) 40%, transparent);"></div>
+        </div>
+      </div>
+      <div class="specimen specimen--dark" style="padding: 28px;">
+        <div class="specimen__label">Signal · Red</div>
+        <div style="height: 80px;"></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div>
+            <div style="font-size:28px; letter-spacing:-0.02em;">Critical</div>
+            <div style="font-family:var(--font-mono); font-size:11px; color:var(--ink-500); margin-top:6px;">DESTRUCTIVE ACTIONS · ERROR · THREAT</div>
+          </div>
+          <div style="width:48px; height:48px; background: var(--signal-red); border-radius: 2px;"></div>
+        </div>
+      </div>
+      <div class="specimen specimen--dark" style="padding: 28px;">
+        <div class="specimen__label">Signal · Online</div>
+        <div style="height: 80px;"></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div>
+            <div style="font-size:28px; letter-spacing:-0.02em;">Nominal</div>
+            <div style="font-family:var(--font-mono); font-size:11px; color:var(--ink-500); margin-top:6px;">SYSTEM HEALTHY · ONLINE · SECURE</div>
+          </div>
+          <div style="width:48px; height:48px; background: oklch(0.78 0.14 150); border-radius: 2px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TYPOGRAPHY ==================== -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">F.02 / FOUNDATIONS</div>
+      <div>
+        <div class="section__title">Typography</div>
+      </div>
+      <div class="section__desc">Geist carries the interface. Geist Mono handles telemetry, coordinates, and classification. Instrument Serif adds considered weight to display.</div>
+    </div>
+
+    <div>
+      <div class="type-row">
+        <div class="type-row__label">Display · 01</div>
+        <div style="font-size: 88px; font-weight: 300; letter-spacing: -0.04em; line-height: 0.95;">The quiet <span class="serif">discipline</span> of making</div>
+        <div class="type-row__spec">Geist 300 · 88 / 0.95 / -4%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Display · 02</div>
+        <div style="font-size: 56px; font-weight: 400; letter-spacing: -0.03em; line-height: 1;">Operations at the edge of uncertainty</div>
+        <div class="type-row__spec">Geist 400 · 56 / 1 / -3%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Heading · H3</div>
+        <div style="font-size: 28px; font-weight: 500; letter-spacing: -0.02em;">Autonomous sensing &amp; effect</div>
+        <div class="type-row__spec">Geist 500 · 28 / 1.1 / -2%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Body · Lead</div>
+        <div style="font-size: 18px; color: var(--ink-300); line-height: 1.5; max-width: 56ch;">A single sovereign system for command, sensing, and effect — built to deploy in days, operate for decades, and withstand adversaries who learn.</div>
+        <div class="type-row__spec">Geist 400 · 18 / 1.5</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Mono · Label</div>
+        <div class="mono" style="font-size: 13px; letter-spacing: 0.08em; color: var(--ink-400);">LAT 31.78420°N · LON 35.23510°E · ALT 0814M</div>
+        <div class="type-row__spec">Geist Mono 400 · 13 / 1.4 / +8%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Serif · Editorial</div>
+        <div class="serif" style="font-size: 44px; line-height: 1.1;">Mission-first.</div>
+        <div class="type-row__spec">Instrument Serif · 44 / 1.1</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BUTTONS ==================== -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.01 / COMPONENTS</div>
+      <div>
+        <div class="section__title">Buttons</div>
+      </div>
+      <div class="section__desc">Six variants. Uppercase, tracked, low-radius. Primary is an inverted fill; glass is reserved for placement over imagery.</div>
+    </div>
+
+    <div class="btn-grid">
+      <div class="btn-cell">
+        <span class="btn-cell__label">01 · Primary</span>
+        <button class="btn btn--primary">Deploy System<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button class="btn btn--primary btn--sm">Request brief</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">02 · Secondary</span>
+        <button class="btn btn--secondary">Read Overview</button>
+        <button class="btn btn--secondary btn--sm">Download PDF</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">03 · Ghost</span>
+        <button class="btn btn--ghost">View Docs →</button>
+        <button class="btn btn--ghost btn--sm">More</button>
+      </div>
+      <div class="btn-cell" style="background-image: url('assets/img-3.png'); background-size: cover; background-position: center; position: relative;">
+        <div style="position:absolute;inset:0;background:color-mix(in oklch, var(--ink-1000) 55%, transparent);filter:grayscale(100%) contrast(1.05);"></div>
+        <span class="btn-cell__label" style="position:relative;z-index:1;color:var(--ink-200);">04 · Glass · on imagery</span>
+        <div style="position:relative;z-index:1;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn--glass">Engage Target</button>
+          <button class="btn btn--glass btn--icon" aria-label="settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.2 4.2l4.3 4.3M15.5 15.5l4.3 4.3M1 12h6M17 12h6M4.2 19.8l4.3-4.3M15.5 8.5l4.3-4.3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">05 · Danger</span>
+        <button class="btn btn--danger">Abort Mission</button>
+        <button class="btn btn--danger btn--sm">Delete</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">06 · Sizes</span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button class="btn btn--primary btn--sm">SM</button>
+          <button class="btn btn--primary">MD</button>
+          <button class="btn btn--primary btn--lg">LG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CARDS ==================== -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.02 / COMPONENTS</div>
+      <div>
+        <div class="section__title">Cards</div>
+      </div>
+      <div class="section__desc">Three patterns — standard, glass-overlay, and stat — all share a 12px radius, 1px hairline, and mono metadata.</div>
+    </div>
+
+    <div class="cards">
+      <!-- Standard card -->
+      <article class="card">
+        <div class="card__media">
+          <img src="assets/img-1.png" alt="" />
+          <span class="card__tag">Radar</span>
+          <div class="card__coords">
+            SYS-14<br/>
+            31.78°N<br/>
+            35.23°E
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Sensing · Ground</div>
+          <div class="card__title">HORIZON-IV Radar Array</div>
+          <p class="card__desc">Multi-band detection optimized for low-RCS targets across 360° at ranges exceeding 400km. Deployable in under 12 minutes.</p>
+          <div class="card__footer">
+            <span>SYS.14.04</span>
+            <span>READ SPEC →</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Glass overlay card -->
+      <article class="card card--glass">
+        <div class="card__media" style="min-height: 100%;">
+          <img src="assets/img-3.png" alt="" />
+          <span class="card__tag">Mobile</span>
+          <div class="card__coords">
+            UV-09<br/>
+            OP. HORIZON-4
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Effector · Mobile</div>
+          <div class="card__title">Talon UV-9</div>
+          <p class="card__desc">Unmanned ground vehicle with integrated sensor-shooter stack; 18-hour endurance at patrol speed.</p>
+          <div class="card__footer" style="border-top-color: var(--glass-stroke);">
+            <span>SYS.09.02</span>
+            <span>READ SPEC →</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Standard card 3 -->
+      <article class="card">
+        <div class="card__media">
+          <img src="assets/img-4.png" alt="" />
+          <span class="card__tag">Command</span>
+          <div class="card__coords">
+            C2-21<br/>
+            NODE 021
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Command · Fixed</div>
+          <div class="card__title">Vanguard C2 Node</div>
+          <p class="card__desc">Classified-grade compute and comms for joint-force coordination. Air-gapped failover across six sovereign data planes.</p>
+          <div class="card__footer">
+            <span>SYS.21.01</span>
+            <span>READ SPEC →</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px;">
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Nodes Deployed</div>
+          <div class="stat__num" style="margin-top: 24px;">2,480</div>
+        </div>
+        <div class="stat__delta">↑ 14.2% · 30d</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Median Latency</div>
+          <div class="stat__num" style="margin-top: 24px;">12<span style="font-size:34px;color:var(--ink-500);"> ms</span></div>
+        </div>
+        <div class="stat__delta">↓ 3.1 ms · 30d</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Uptime · 12mo</div>
+          <div class="stat__num" style="margin-top: 24px;">99.982<span style="font-size:34px;color:var(--ink-500);">%</span></div>
+        </div>
+        <div class="stat__delta">SLA · 99.95%</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Active Missions</div>
+          <div class="stat__num" style="margin-top: 24px;">047</div>
+        </div>
+        <div class="stat__delta" style="color: var(--signal-amber)">◉ TRACKING</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== NAV SPECIMEN (in context) ==================== -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.03 / COMPONENTS</div>
+      <div>
+        <div class="section__title">Navigation</div>
+      </div>
+      <div class="section__desc">Floating glass bar with a live ops indicator and versioning meta. Fixed-top in production; shown here in-context.</div>
+    </div>
+
+    <div class="specimen" style="padding: 32px; background: url('assets/img-2.png') center/cover; position: relative;">
+      <div style="position:absolute;inset:0;background:color-mix(in oklch, var(--ink-1000) 45%, transparent); filter: grayscale(100%);"></div>
+      <div class="specimen__label" style="color:var(--ink-100); z-index: 3;">NAV · on imagery</div>
+      <!-- inlined nav specimen (not fixed) -->
+      <div style="position: relative; z-index: 2; display:flex; align-items:center; height:56px; padding: 0 24px 0 16px; background: color-mix(in oklch, var(--ink-1000) 60%, transparent); backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%); border: 1px solid var(--glass-stroke); border-radius: var(--r-3); box-shadow: 0 1px 0 0 var(--glass-hi) inset, 0 24px 48px -24px rgba(0,0,0,0.5);">
+        <div class="nav__brand" style="padding-right: 20px;">
+          <div class="nav__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 3 L4 21 L20 21" />
+              <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.4" />
+              <circle cx="4" cy="3" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="20" cy="21" r="1.2" fill="currentColor" stroke="none" />
+            </svg>
+          </div>
+          <span class="nav__wordmark">Legion</span>
+        </div>
+        <div class="nav__links" style="margin-left: 20px;">
+          <a class="nav__link nav__link--active" href="#">Platform</a>
+          <a class="nav__link" href="#">Systems</a>
+          <a class="nav__link" href="#">Missions</a>
+          <a class="nav__link" href="#">Research</a>
+          <a class="nav__link" href="#">Press</a>
+        </div>
+        <div class="nav__meta"><span class="dot"></span><span>OPS // LIVE</span></div>
+        <button class="btn btn--glass btn--sm">Request Brief →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== META STRIP ==================== -->
+<section class="section" style="padding-top: 0; padding-bottom: 48px;">
+  <div class="container">
+    <div class="meta-strip">
+      <div><span class="k">Grid</span><span class="v">12 · 96px</span></div>
+      <div><span class="k">Radius</span><span class="v">0 · 2 · 6 · 12 · 20</span></div>
+      <div><span class="k">Hairline</span><span class="v">1px · ink-800</span></div>
+      <div><span class="k">Blur · Glass</span><span class="v">20–24px</span></div>
+      <div><span class="k">Motion</span><span class="v">180ms · cubic-bezier(.2,.7,.3,1)</span></div>
+      <div><span class="k">Contrast</span><span class="v">WCAG AA+</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container">
+    <div class="footer-cols">
+      <div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 18px;">
+          <div class="nav__mark" style="width: 32px; height: 32px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 3 L4 21 L20 21" />
+              <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.4" />
+              <circle cx="4" cy="3" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="20" cy="21" r="1.2" fill="currentColor" stroke="none" />
+            </svg>
+          </div>
+          <span class="nav__wordmark" style="font-size: 16px;">Legion</span>
+        </div>
+        <p style="color: var(--ink-400); font-family: var(--font-sans); font-size: 13.5px; max-width: 40ch; line-height: 1.5;">Defense infrastructure for sovereign operators. Built for decades of service.</p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="#">Sensing</a>
+        <a href="#">Command</a>
+        <a href="#">Effectors</a>
+        <a href="#">Logistics</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">Mission</a>
+        <a href="#">Press</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Export Controls</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+    <div style="display:flex; justify-content: space-between; padding-top: var(--s-5); border-top: 1px solid var(--ink-900);">
+      <span>© 2026 Legion Defense Systems — All rights reserved</span>
+      <span>BUILD 4.12.0 · 2026.04.24 · DESIGN.SYSTEM/v1</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Render color swatches procedurally
+  const tokens = [
+    ['--ink-1000', '1000'], ['--ink-950', '950'], ['--ink-900', '900'],
+    ['--ink-800', '800'], ['--ink-700', '700'], ['--ink-600', '600'],
+    ['--ink-500', '500'], ['--ink-400', '400'], ['--ink-300', '300'],
+    ['--ink-200', '200'], ['--ink-100', '100'], ['--ink-50', '50'],
+  ];
+  const root = getComputedStyle(document.documentElement);
+  const grid = document.getElementById('swatches');
+  tokens.forEach(([v, n]) => {
+    const v2 = root.getPropertyValue(v).trim();
+    const el = document.createElement('div');
+    el.className = 'swatch';
+    el.style.background = `var(${v})`;
+    const isDark = parseInt(n) > 400;
+    el.innerHTML = `
+      <div class="swatch__num" style="color:${isDark ? 'var(--ink-400)' : 'var(--ink-800)'}">ink-${n}</div>
+      <div class="swatch__hex" style="color:${isDark ? 'var(--ink-500)' : 'var(--ink-700)'}">${v2}</div>
+    `;
+    grid.appendChild(el);
+  });
+
+  // Subtle live clock in hero ticker (mono feel)
+  (function(){
+    const tickers = document.querySelectorAll('.hero__ticker .corner--tr');
+    if (!tickers.length) return;
+    const el = tickers[0];
+    // leave as-is; simply keep static label for sobriety
+  })();
+</script>
+
+</body>
+</html>

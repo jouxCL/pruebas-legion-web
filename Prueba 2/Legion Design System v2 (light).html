@@ -1,0 +1,1203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Legion — Design System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/legion-mark.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+<style>
+  /* ———————————————————————————————
+     LEGION — Light, sober design system
+     Inverted: paper background, ink foreground.
+     ——————————————————————————————— */
+  :root {
+    --paper:    #FAFAF9;
+    --paper-2:  #F2F2F0;
+    --paper-3:  #ECECEA;
+
+    /* ink scale: 50 = darkest, 900 = lightest */
+    --ink-50:   #0A0A0A;
+    --ink-100:  #1A1A1A;
+    --ink-200:  #2A2A2A;
+    --ink-300:  #3D3D3D;
+    --ink-400:  #595959;
+    --ink-500:  #757575;
+    --ink-600:  #9A9A9A;
+    --ink-700:  #BFBFBF;
+    --ink-800:  #DEDEDC;
+    --ink-900:  #E9E9E7;
+    --ink-950:  #F0F0EE;
+
+    /* signal — used very sparingly */
+    --signal-red:    #B33A2A;
+    --signal-green:  #2F7D4F;
+    --signal-amber:  #B8862A;
+
+    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "JetBrains Mono", monospace;
+    --font-serif: "Instrument Serif", "Times New Roman", serif;
+
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+    --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+    --s-9: 96px; --s-10: 128px;
+
+    --r-1: 2px; --r-2: 4px; --r-3: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink-100);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  img, video, svg { display: block; }
+
+  h1, h2, h3, h4 {
+    font-weight: 400;
+    color: var(--ink-50);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  h1 { font-size: clamp(44px, 5.6vw, 80px); font-weight: 300; letter-spacing: -0.03em; }
+  h2 { font-size: clamp(28px, 3.2vw, 44px); font-weight: 400; letter-spacing: -0.025em; }
+  h3 { font-size: 20px; font-weight: 500; }
+
+  .mono { font-family: var(--font-mono); }
+  .serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+
+  .container { max-width: 1360px; margin: 0 auto; padding: 0 var(--s-7); }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 6px; height: 1px;
+    background: var(--ink-400);
+  }
+
+  /* ——— NAV ——— */
+  .nav {
+    position: fixed;
+    inset: 16px 16px auto 16px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 14px;
+    gap: 12px;
+    background: rgba(250, 250, 249, 0.78);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-2);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.6) inset;
+  }
+  .nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 18px;
+    border-right: 1px solid var(--ink-800);
+    height: 100%;
+    flex-shrink: 0;
+  }
+  .nav__mark { width: 22px; height: 22px; color: var(--ink-50); }
+  .nav__mark svg { width: 100%; height: 100%; }
+  .nav__wordmark {
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--ink-50);
+  }
+  .nav__links {
+    display: flex;
+    gap: 2px;
+    margin-left: 14px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .nav__link {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--ink-300);
+    border-radius: var(--r-1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .15s;
+  }
+  .nav__link:hover { color: var(--ink-50); }
+  .nav__link--active { color: var(--ink-50); }
+  .nav__link--active::before {
+    content: ""; width: 3px; height: 3px; border-radius: 50%;
+    background: var(--ink-50);
+  }
+  .nav__meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav__meta .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--signal-green);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+  @media (max-width: 1180px) { .nav__meta { display: none; } }
+  @media (max-width: 960px)  { .nav__links { display: none; } }
+
+  /* ——— HERO ——— */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    overflow: hidden;
+    padding-top: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--ink-800);
+  }
+  .hero__media { position: absolute; inset: 0; z-index: 0; }
+  .hero__media video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(0.95) brightness(1.1);
+  }
+  .hero__veil {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to top,
+        var(--paper) 0%,
+        rgba(250,250,249,0.55) 45%,
+        rgba(250,250,249,0.15) 100%);
+    pointer-events: none;
+  }
+
+  .hero__ticker {
+    position: absolute;
+    top: 100px; left: 64px; right: 64px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-300);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 64px 80px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 64px;
+    align-items: end;
+  }
+  .hero__title {
+    font-size: clamp(48px, 6.4vw, 96px);
+    font-weight: 300;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--ink-50);
+  }
+  .hero__sub {
+    color: var(--ink-300);
+    font-size: 16px;
+    max-width: 48ch;
+    margin-top: 24px;
+    line-height: 1.55;
+  }
+  .hero__actions { margin-top: 32px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .hero__sidecard {
+    padding: 18px;
+    background: rgba(250, 250, 249, 0.72);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-2);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.6) inset;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sidecard__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink-800);
+  }
+  .sidecard__title {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-300);
+    text-transform: uppercase;
+  }
+  .sidecard__row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .sidecard__row .k { color: var(--ink-500); letter-spacing: 0.06em; text-transform: uppercase; font-size: 10.5px; }
+  .sidecard__row .v { color: var(--ink-50); font-variant-numeric: tabular-nums; }
+  .sidecard__chart {
+    height: 36px;
+    border-top: 1px solid var(--ink-800);
+    border-bottom: 1px solid var(--ink-800);
+    margin: 0 -18px;
+  }
+  .sidecard__chart svg { width: 100%; height: 100%; }
+
+  /* ——— BUTTONS ——— */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 42px;
+    padding: 0 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: var(--r-1);
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .btn svg { width: 13px; height: 13px; stroke-width: 1.6; }
+  .btn--primary {
+    background: var(--ink-50);
+    color: var(--paper);
+    border: 1px solid var(--ink-50);
+  }
+  .btn--primary:hover { background: var(--ink-200); border-color: var(--ink-200); }
+  .btn--secondary {
+    background: transparent;
+    color: var(--ink-50);
+    border: 1px solid var(--ink-700);
+  }
+  .btn--secondary:hover { border-color: var(--ink-50); }
+  .btn--glass {
+    background: rgba(250,250,249,0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    color: var(--ink-50);
+    border: 1px solid rgba(10,10,10,0.18);
+  }
+  .btn--glass:hover { background: rgba(250,250,249,0.75); }
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink-300);
+    border: 1px solid transparent;
+  }
+  .btn--ghost:hover { color: var(--ink-50); }
+  .btn--danger {
+    background: transparent;
+    color: var(--signal-red);
+    border: 1px solid rgba(179,58,42,0.4);
+  }
+  .btn--danger:hover { background: rgba(179,58,42,0.06); }
+  .btn--sm { height: 30px; padding: 0 12px; font-size: 10.5px; }
+  .btn--lg { height: 50px; padding: 0 26px; font-size: 12.5px; }
+  .btn--icon { width: 42px; padding: 0; }
+
+  /* ——— SECTIONS ——— */
+  .classif {
+    padding: 10px 64px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink-800);
+    background: var(--paper-2);
+  }
+  .intro { padding: 128px 0 80px; border-bottom: 1px solid var(--ink-800); }
+  .intro__grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: end; }
+  .intro h1 { font-size: clamp(48px, 6vw, 88px); font-weight: 300; letter-spacing: -0.035em; }
+  .intro p { color: var(--ink-300); font-size: 15.5px; max-width: 50ch; line-height: 1.6; }
+
+  .section { padding: 96px 0; border-bottom: 1px solid var(--ink-800); }
+  .section__head {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 40px;
+    align-items: end;
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--ink-900);
+  }
+  .section__idx {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+  }
+  .section__title {
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    color: var(--ink-50);
+    line-height: 1;
+  }
+  .section__desc { color: var(--ink-400); max-width: 44ch; font-size: 14px; line-height: 1.55; }
+
+  /* color tokens */
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1px;
+    background: var(--ink-800);
+    border: 1px solid var(--ink-800);
+  }
+  .swatch {
+    aspect-ratio: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .swatch__num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+  .swatch__hex {
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .signal-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .signal-card {
+    padding: 24px;
+    background: var(--paper);
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-2);
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    min-height: 180px;
+    justify-content: space-between;
+  }
+  .signal-card__bar { height: 2px; }
+  .signal-card__title { font-size: 22px; letter-spacing: -0.02em; color: var(--ink-50); }
+  .signal-card__desc {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* type spec rows */
+  .type-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 200px;
+    align-items: baseline;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--ink-900);
+    gap: 24px;
+  }
+  .type-row__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .type-row__spec {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+    text-align: right;
+  }
+
+  /* button grid */
+  .btn-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--ink-800);
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .btn-cell {
+    background: var(--paper);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 160px;
+  }
+  .btn-cell--image {
+    background: url('assets/img-3.png') center/cover;
+    position: relative;
+    isolation: isolate;
+  }
+  .btn-cell--image::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(10,10,10,0.55);
+    filter: grayscale(100%);
+    z-index: -1;
+  }
+  .btn-cell--image .btn-cell__label { color: var(--paper); }
+  .btn-cell__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+  }
+
+  /* cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+  .card {
+    position: relative;
+    border-radius: var(--r-2);
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid var(--ink-800);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: var(--ink-400); }
+  .card__media {
+    position: relative;
+    flex: 1;
+    min-height: 220px;
+    overflow: hidden;
+    background: var(--ink-50);
+  }
+  .card__media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.0);
+  }
+  .card__tag {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ink-50);
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: rgba(250,250,249,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .card__tag::before {
+    content: ""; width: 4px; height: 4px; background: var(--ink-50);
+  }
+  .card__coords {
+    position: absolute; top: 12px; right: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--paper);
+    text-align: right;
+    line-height: 1.4;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  .card__body {
+    padding: 22px;
+    border-top: 1px solid var(--ink-800);
+    background: var(--paper);
+  }
+  .card__kicker {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .card__title { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink-50); margin-bottom: 8px; }
+  .card__desc { color: var(--ink-300); font-size: 13.5px; line-height: 1.55; }
+  .card__footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--ink-900);
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-400);
+    letter-spacing: 0.06em;
+  }
+
+  /* glass overlay card */
+  .card--glass { min-height: 440px; }
+  .card--glass .card__media { flex: 1; min-height: 0; }
+  .card--glass .card__body {
+    position: absolute;
+    left: 14px; right: 14px; bottom: 14px;
+    background: rgba(250,250,249,0.82);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(10,10,10,0.12);
+    border-radius: var(--r-2);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.7) inset;
+  }
+
+  /* stat card */
+  .card--stat {
+    min-height: 200px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .stat__num {
+    font-size: 64px;
+    font-weight: 300;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-50);
+  }
+  .stat__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+  }
+  .stat__delta {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-400);
+    letter-spacing: 0.04em;
+  }
+
+  /* meta strip */
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-top: 1px solid var(--ink-800);
+    border-bottom: 1px solid var(--ink-800);
+  }
+  .meta-strip > div {
+    padding: 16px 18px;
+    border-right: 1px solid var(--ink-900);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .meta-strip > div:last-child { border-right: 0; }
+  .meta-strip .k {
+    font-family: var(--font-mono);
+    color: var(--ink-500);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .meta-strip .v {
+    font-family: var(--font-mono);
+    color: var(--ink-50);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* chips */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 6px 12px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-300);
+    border: 1px solid var(--ink-800);
+    border-radius: 999px;
+    background: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chip::before {
+    content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--ink-600);
+  }
+  .chip--on::before { background: var(--ink-50); }
+  .chip--ok::before { background: var(--signal-green); }
+
+  .specimen-image {
+    border: 1px solid var(--ink-800);
+    border-radius: var(--r-2);
+    background: url('assets/img-2.png') center/cover;
+    padding: 32px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .specimen-image::before {
+    content: ""; position: absolute; inset: 0;
+    background: rgba(10,10,10,0.45);
+    filter: grayscale(100%);
+    z-index: -1;
+  }
+
+  /* footer */
+  footer {
+    padding: 80px 0 24px;
+    color: var(--ink-500);
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 48px;
+  }
+  .footer-cols h4 {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .footer-cols a {
+    color: var(--ink-300);
+    display: block;
+    padding: 4px 0;
+    font-size: 13.5px;
+  }
+  .footer-cols a:hover { color: var(--ink-50); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--ink-800);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-500);
+    letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav__brand">
+    <div class="nav__mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 3 L4 21 L20 21" />
+        <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.35" />
+      </svg>
+    </div>
+    <span class="nav__wordmark">Legion</span>
+  </div>
+  <div class="nav__links">
+    <a class="nav__link nav__link--active" href="#">Platform</a>
+    <a class="nav__link" href="#">Systems</a>
+    <a class="nav__link" href="#">Missions</a>
+    <a class="nav__link" href="#">Research</a>
+    <a class="nav__link" href="#">Press</a>
+    <a class="nav__link" href="#">Careers</a>
+  </div>
+  <div class="nav__meta">
+    <span class="dot"></span>
+    <span>OPS · LIVE</span>
+    <span style="color:var(--ink-700)">|</span>
+    <span>v4.12.0</span>
+  </div>
+  <button class="btn btn--secondary btn--sm" style="flex-shrink:0;">Request Brief →</button>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero__media">
+    <video autoplay muted loop playsinline>
+      <source src="assets/hero-defense.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__veil"></div>
+  </div>
+
+  <div class="hero__ticker">
+    <span>Legion / Defense Systems</span>
+    <span>Lat 31.78°N · Lon 35.23°E · Alt 0814m</span>
+    <span>Transmission Secure</span>
+  </div>
+
+  <div class="hero__content">
+    <div>
+      <div class="eyebrow" style="margin-bottom: 28px;">Autonomous Defense Infrastructure</div>
+      <h1 class="hero__title">
+        Precision at the<br/>
+        edge of <span class="serif">uncertainty</span>.
+      </h1>
+      <p class="hero__sub">Integrated hardware and software for national defense — sensing, command, and effect operating as a single, sovereign system.</p>
+      <div class="hero__actions">
+        <button class="btn btn--primary btn--lg">
+          Explore the Platform
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <button class="btn btn--glass btn--lg">
+          Watch Film
+        </button>
+      </div>
+      <div class="chips" style="margin-top: 36px;">
+        <span class="chip chip--on">Sensing</span>
+        <span class="chip chip--on">Command</span>
+        <span class="chip chip--ok">Effectors</span>
+        <span class="chip">Logistics</span>
+        <span class="chip">Maritime</span>
+      </div>
+    </div>
+
+    <aside class="hero__sidecard" aria-label="System telemetry">
+      <div class="sidecard__head">
+        <span class="sidecard__title">Telemetry · Δ-07</span>
+        <span class="mono" style="font-size:10.5px; color: var(--ink-300); letter-spacing: 0.12em; text-transform: uppercase;">Active</span>
+      </div>
+      <div class="sidecard__row"><span class="k">Nodes online</span><span class="v">248 / 256</span></div>
+      <div class="sidecard__row"><span class="k">Latency</span><span class="v">12 ms</span></div>
+      <div class="sidecard__row"><span class="k">Bandwidth</span><span class="v">1.42 GB/s</span></div>
+      <div class="sidecard__chart">
+        <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+          <polyline fill="none" stroke="#0A0A0A" stroke-width="1"
+            points="0,28 15,26 30,23 45,24 60,16 75,20 90,10 105,14 120,7 135,12 150,5 165,9 180,3 200,8" />
+        </svg>
+      </div>
+      <div class="sidecard__row"><span class="k">Mission</span><span class="v">Op. Horizon-4</span></div>
+      <div class="sidecard__row"><span class="k">Status</span><span class="v" style="color: var(--signal-green)">Nominal</span></div>
+    </aside>
+  </div>
+</header>
+
+<!-- CLASSIF BANNER -->
+<div class="classif">
+  <span>// Design System — v1.0.2</span>
+  <span>Internal Use</span>
+  <span>Last Updated 2026.04.24</span>
+</div>
+
+<!-- INTRO -->
+<div class="intro">
+  <div class="container">
+    <div class="intro__grid">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 28px;">The System</div>
+        <h1>A <span class="serif">monochrome</span> language for serious infrastructure.</h1>
+      </div>
+      <div>
+        <p>Legion's design system favors legibility, restraint, and signal over decoration. Built around a single neutral spine — paper through deep ink — with sparing use of color reserved only for critical status. Motion is quiet. Detail rewards attention.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">F.01 / Foundations</div>
+      <div><div class="section__title">Palette</div></div>
+      <div class="section__desc">Twelve-step neutral spine plus three signal colors. Accents appear only for status, classification, and critical actions.</div>
+    </div>
+
+    <div class="token-grid" id="swatches"></div>
+
+    <div class="signal-row">
+      <div class="signal-card">
+        <div>
+          <div class="signal-card__bar" style="background: var(--signal-amber);"></div>
+        </div>
+        <div>
+          <div class="signal-card__title">Tracking</div>
+          <div class="signal-card__desc">Active targets · in-progress states</div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div>
+          <div class="signal-card__bar" style="background: var(--signal-red);"></div>
+        </div>
+        <div>
+          <div class="signal-card__title">Critical</div>
+          <div class="signal-card__desc">Destructive actions · errors · threats</div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div>
+          <div class="signal-card__bar" style="background: var(--signal-green);"></div>
+        </div>
+        <div>
+          <div class="signal-card__title">Nominal</div>
+          <div class="signal-card__desc">System healthy · online · secure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">F.02 / Foundations</div>
+      <div><div class="section__title">Typography</div></div>
+      <div class="section__desc">Geist for the interface. Geist Mono for telemetry, coordinates, and classification. Instrument Serif lends considered weight to display.</div>
+    </div>
+
+    <div>
+      <div class="type-row">
+        <div class="type-row__label">Display · 01</div>
+        <div style="font-size: 80px; font-weight: 300; letter-spacing: -0.035em; line-height: 0.95; color: var(--ink-50);">The quiet <span class="serif">discipline</span> of making</div>
+        <div class="type-row__spec">Geist 300 · 80 / 0.95 / -3.5%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Display · 02</div>
+        <div style="font-size: 48px; font-weight: 400; letter-spacing: -0.025em; line-height: 1; color: var(--ink-50);">Operations at the edge of uncertainty</div>
+        <div class="type-row__spec">Geist 400 · 48 / 1 / -2.5%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Heading · H3</div>
+        <div style="font-size: 24px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink-50);">Autonomous sensing &amp; effect</div>
+        <div class="type-row__spec">Geist 500 · 24 / 1.1 / -2%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Body · Lead</div>
+        <div style="font-size: 17px; color: var(--ink-300); line-height: 1.55; max-width: 56ch;">A single sovereign system for command, sensing, and effect — built to deploy in days, operate for decades, and endure adversaries who learn.</div>
+        <div class="type-row__spec">Geist 400 · 17 / 1.55</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Mono · Label</div>
+        <div class="mono" style="font-size: 13px; letter-spacing: 0.1em; color: var(--ink-400);">LAT 31.78420°N · LON 35.23510°E · ALT 0814M</div>
+        <div class="type-row__spec">Geist Mono 400 · 13 / 1.4 / +10%</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__label">Serif · Editorial</div>
+        <div class="serif" style="font-size: 40px; line-height: 1.1; color: var(--ink-50);">Mission-first.</div>
+        <div class="type-row__spec">Instrument Serif · 40 / 1.1</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.01 / Components</div>
+      <div><div class="section__title">Buttons</div></div>
+      <div class="section__desc">Five variants in three sizes. Uppercase, tracked, low-radius. Primary inverts to deep ink; glass is reserved for placement over imagery.</div>
+    </div>
+
+    <div class="btn-grid">
+      <div class="btn-cell">
+        <span class="btn-cell__label">01 · Primary</span>
+        <button class="btn btn--primary">Deploy System<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <button class="btn btn--primary btn--sm">Request brief</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">02 · Secondary</span>
+        <button class="btn btn--secondary">Read Overview</button>
+        <button class="btn btn--secondary btn--sm">Download PDF</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">03 · Ghost</span>
+        <button class="btn btn--ghost">View Docs →</button>
+        <button class="btn btn--ghost btn--sm">More</button>
+      </div>
+      <div class="btn-cell btn-cell--image">
+        <span class="btn-cell__label">04 · Glass · on imagery</span>
+        <button class="btn btn--glass">Engage Target</button>
+        <button class="btn btn--glass btn--sm">Track</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">05 · Danger</span>
+        <button class="btn btn--danger">Abort Mission</button>
+        <button class="btn btn--danger btn--sm">Delete</button>
+      </div>
+      <div class="btn-cell">
+        <span class="btn-cell__label">06 · Sizes</span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button class="btn btn--primary btn--sm">SM</button>
+          <button class="btn btn--primary">MD</button>
+          <button class="btn btn--primary btn--lg">LG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARDS -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.02 / Components</div>
+      <div><div class="section__title">Cards</div></div>
+      <div class="section__desc">Three patterns — standard, glass-overlay, and stat. All share a 4px radius, 1px hairline, and mono metadata.</div>
+    </div>
+
+    <div class="cards">
+      <article class="card">
+        <div class="card__media">
+          <img src="assets/img-1.png" alt="" />
+          <span class="card__tag">Radar</span>
+          <div class="card__coords">SYS-14<br/>31.78°N<br/>35.23°E</div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Sensing · Ground</div>
+          <div class="card__title">Horizon-IV Radar Array</div>
+          <p class="card__desc">Multi-band detection optimized for low-RCS targets across 360° at ranges exceeding 400km. Deployable in under twelve minutes.</p>
+          <div class="card__footer">
+            <span>SYS.14.04</span>
+            <span>Read Spec →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card--glass">
+        <div class="card__media" style="min-height: 100%;">
+          <img src="assets/img-3.png" alt="" />
+          <span class="card__tag">Mobile</span>
+          <div class="card__coords">UV-09<br/>Op. Horizon-4</div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Effector · Mobile</div>
+          <div class="card__title">Talon UV-9</div>
+          <p class="card__desc">Unmanned ground vehicle with integrated sensor-shooter stack; eighteen-hour endurance at patrol speed.</p>
+          <div class="card__footer">
+            <span>SYS.09.02</span>
+            <span>Read Spec →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__media">
+          <img src="assets/img-4.png" alt="" />
+          <span class="card__tag">Command</span>
+          <div class="card__coords">C2-21<br/>Node 021</div>
+        </div>
+        <div class="card__body">
+          <div class="card__kicker">Command · Fixed</div>
+          <div class="card__title">Vanguard C2 Node</div>
+          <p class="card__desc">Classified-grade compute and comms for joint-force coordination. Air-gapped failover across six sovereign data planes.</p>
+          <div class="card__footer">
+            <span>SYS.21.01</span>
+            <span>Read Spec →</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 16px;">
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Nodes Deployed</div>
+          <div class="stat__num" style="margin-top: 22px;">2,480</div>
+        </div>
+        <div class="stat__delta">↑ 14.2% · 30d</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Median Latency</div>
+          <div class="stat__num" style="margin-top: 22px;">12<span style="font-size:30px;color:var(--ink-500);"> ms</span></div>
+        </div>
+        <div class="stat__delta">↓ 3.1 ms · 30d</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Uptime · 12mo</div>
+          <div class="stat__num" style="margin-top: 22px;">99.98<span style="font-size:30px;color:var(--ink-500);">%</span></div>
+        </div>
+        <div class="stat__delta">SLA · 99.95%</div>
+      </div>
+      <div class="card card--stat">
+        <div>
+          <div class="stat__label">Active Missions</div>
+          <div class="stat__num" style="margin-top: 22px;">047</div>
+        </div>
+        <div class="stat__delta">Tracking</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV SPECIMEN -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">C.03 / Components</div>
+      <div><div class="section__title">Navigation</div></div>
+      <div class="section__desc">Floating glass bar with live ops indicator and version meta. Fixed-top in production; shown here in-context.</div>
+    </div>
+
+    <div class="specimen-image">
+      <div style="display:flex; align-items:center; height:56px; padding: 0 14px; gap: 12px; background: rgba(250,250,249,0.78); backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%); border: 1px solid var(--ink-800); border-radius: var(--r-2); box-shadow: 0 1px 0 0 rgba(255,255,255,0.6) inset;">
+        <div class="nav__brand" style="padding-right: 18px;">
+          <div class="nav__mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 3 L4 21 L20 21" />
+              <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.35" />
+            </svg>
+          </div>
+          <span class="nav__wordmark">Legion</span>
+        </div>
+        <div class="nav__links" style="margin-left: 14px;">
+          <a class="nav__link nav__link--active" href="#">Platform</a>
+          <a class="nav__link" href="#">Systems</a>
+          <a class="nav__link" href="#">Missions</a>
+          <a class="nav__link" href="#">Research</a>
+          <a class="nav__link" href="#">Press</a>
+        </div>
+        <div class="nav__meta"><span class="dot"></span><span>OPS · LIVE</span></div>
+        <button class="btn btn--secondary btn--sm">Request Brief →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- META STRIP -->
+<section class="section" style="border-bottom: 0; padding-bottom: 48px;">
+  <div class="container">
+    <div class="section__head">
+      <div class="section__idx">F.03 / Foundations</div>
+      <div><div class="section__title">System</div></div>
+      <div class="section__desc">Grid, radii, motion, and contrast — the underlying constants every component honors.</div>
+    </div>
+
+    <div class="meta-strip">
+      <div><span class="k">Grid</span><span class="v">12 · 96px</span></div>
+      <div><span class="k">Radius</span><span class="v">2 · 4 · 8</span></div>
+      <div><span class="k">Hairline</span><span class="v">1px · ink-800</span></div>
+      <div><span class="k">Glass blur</span><span class="v">18–20px</span></div>
+      <div><span class="k">Motion</span><span class="v">180ms · ease-out</span></div>
+      <div><span class="k">Contrast</span><span class="v">WCAG AA+</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-cols">
+      <div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 18px;">
+          <div class="nav__mark" style="width: 28px; height: 28px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 3 L4 21 L20 21" />
+              <path d="M4 3 L16 3 L20 7 L20 21" stroke-opacity="0.35" />
+            </svg>
+          </div>
+          <span class="nav__wordmark" style="font-size: 14px;">Legion</span>
+        </div>
+        <p style="color: var(--ink-300); font-size: 13.5px; max-width: 42ch; line-height: 1.55;">Defense infrastructure for sovereign operators. Built for decades of service.</p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="#">Sensing</a>
+        <a href="#">Command</a>
+        <a href="#">Effectors</a>
+        <a href="#">Logistics</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">Mission</a>
+        <a href="#">Press</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Export Controls</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Legion Defense Systems · All rights reserved</span>
+      <span>BUILD 4.12.0 · 2026.04.24 · DESIGN.SYSTEM/v1</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Render swatches procedurally
+  const tokens = [
+    ['paper',   'paper',     '#FAFAF9', true],
+    ['paper-2', 'paper-2',   '#F2F2F0', true],
+    ['paper-3', 'paper-3',   '#ECECEA', true],
+    ['ink-950', 'ink-950',   '#F0F0EE', true],
+    ['ink-900', 'ink-900',   '#E9E9E7', true],
+    ['ink-800', 'ink-800',   '#DEDEDC', true],
+    ['ink-700', 'ink-700',   '#BFBFBF', true],
+    ['ink-600', 'ink-600',   '#9A9A9A', true],
+    ['ink-500', 'ink-500',   '#757575', false],
+    ['ink-300', 'ink-300',   '#3D3D3D', false],
+    ['ink-100', 'ink-100',   '#1A1A1A', false],
+    ['ink-50',  'ink-50',    '#0A0A0A', false],
+  ];
+  const grid = document.getElementById('swatches');
+  tokens.forEach(([cssVar, label, hex, isLight]) => {
+    const el = document.createElement('div');
+    el.className = 'swatch';
+    el.style.background = hex;
+    const numColor = isLight ? '#3D3D3D' : '#BFBFBF';
+    const hexColor = isLight ? '#757575' : '#9A9A9A';
+    el.innerHTML = `
+      <div class="swatch__num" style="color:${numColor}">${label}</div>
+      <div class="swatch__hex" style="color:${hexColor}">${hex}</div>
+    `;
+    grid.appendChild(el);
+  });
+</script>
+
+</body>
+</html>
